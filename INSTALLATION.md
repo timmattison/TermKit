@@ -72,3 +72,11 @@ npm test
 * If you encounter socket connection issues, make sure the server is running and listening on port 2222
 * Check that all dependencies were correctly installed with `npm install`
 * For browser-based usage, ensure you're using a WebKit-compatible browser
+* Check the server console logs for detailed diagnostic information about:
+  - HTTP requests (`[HTTP]` prefix)
+  - Socket.IO connections (`[Socket.IO]` prefix)
+  - Router operations (`[Router]` prefix)
+  - Any errors (`[ERROR]` prefix)
+* Browser console logs will also provide detailed information about client-side errors
+* If the browser shows a blank page or hangs, check the server logs for connection issues
+* If a specific error message is displayed, refer to the error details for troubleshooting guidance

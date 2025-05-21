@@ -56,5 +56,21 @@
 
 <div><iframe id="usage"></iframe></div>
 
+<div id="error-container" style="display:none; background: #ffeeee; color: #cc0000; padding: 10px; margin: 10px; border: 1px solid #cc0000; border-radius: 5px;">
+  <h3>Connection Error</h3>
+  <p id="error-message">Could not connect to the TermKit server.</p>
+  <p>Please make sure the server is running at http://localhost:2222</p>
+  <button onclick="location.reload()">Retry Connection</button>
+</div>
+
+<script>
+// Error handling script
+window.onerror = function(message, source, lineno, colno, error) {
+  console.error("JavaScript error:", message, "at", source, lineno, colno);
+  document.getElementById('error-container').style.display = 'block';
+  document.getElementById('error-message').textContent = message;
+};
+</script>
+
 </body>
 </html>

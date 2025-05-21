@@ -9,6 +9,19 @@ body {
   height: 100%;
 }
 
+/* Error styles */
+.error {
+  background: #ffeeee;
+  color: #cc0000;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #cc0000;
+  border-radius: 5px;
+  font-family: Monaco, monospace;
+  font-size: 12px;
+  white-space: pre-wrap;
+}
+
 #terminal {
   background: #000;
   min-height: 100%;

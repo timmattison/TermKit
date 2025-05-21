@@ -5,19 +5,43 @@ var termkit = window.termkit || {};
 ///////////////////////////////////////////////////////////////////////////////
   
 $(document).ready(function () {
+  console.log("TermKit Initializing...");
 
-  var client = new termkit.client();
-  client.onConnect = function () {
-    var shell = new termkit.client.shell(client, {}, function (shell) {
-      var view = new termkit.commandView(shell);
-      $('#terminal').append(view.$element);
-      view.newCommand();
-    });    
-  };
+  try {
+    var client = new termkit.client();
+    
+    client.onConnect = function () {
+      console.log("Connected to TermKit server");
+      try {
+        var shell = new termkit.client.shell(client, {}, function (shell) {
+          console.log("Shell created successfully");
+          var view = new termkit.commandView(shell);
+          $('#terminal').append(view.$element);
+          view.newCommand();
+        });
+      } catch (e) {
+        console.error("Error creating shell:", e);
+      }
+    };
+    
+    client.onDisconnect = function() {
+      console.log("Disconnected from TermKit server");
+      $('#terminal').append('<div class="error">Disconnected from server. Please refresh the page to reconnect.</div>');
+    };
+    
+    client.onError = function(error) {
+      console.error("Socket connection error:", error);
+      $('#terminal').append('<div class="error">Connection error: ' + error + '</div>');
+    };
+  } catch (e) {
+    console.error("Error initializing TermKit:", e);
+    $('#terminal').append('<div class="error">Error initializing TermKit: ' + e.message + '</div>');
+  }
   
-  $(document).mousedown(function () {
-    alert('wtf');
-  });
+  // Remove the alert on mousedown that was probably for debugging
+  // $(document).mousedown(function () {
+  //   alert('wtf');
+  // });
 });
 
 })(jQuery);

@@ -1,4 +1,4 @@
-var mime = require('mime');
+var mime = require('mime/lite');
 
 // Is x an object?
 function isObject(x) {
@@ -557,5 +557,5 @@ mime.define({
   'text/x-sass': ['sass', 'scss'],
   'text/x-scala': ['scala'],
   'text/x-sql': ['sql'],
-  'text/xml': ['xml'],
-});
+  'text/xml': ['xml']
+}, {force: true});

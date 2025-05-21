@@ -8,7 +8,7 @@ var fs = require('fs'),
     JSONPretty = require(path.join(__dirname, '..', 'misc')).JSONPretty,
     composePath = require(path.join(__dirname, '..', 'misc')).composePath,
     objectKeys = require(path.join(__dirname, '..', 'misc')).objectKeys,
-    reader = require(path.join(__dirname, '..', 'reader')),
+    reader = require(path.join(__dirname, '..', 'shell/reader')),
     escapeBinary = require(path.join(__dirname, '..', 'misc')).escapeBinary,
     escapeUnixText = require(path.join(__dirname, '..', 'misc')).escapeUnixText;
 

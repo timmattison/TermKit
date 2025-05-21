@@ -38,14 +38,22 @@ http://acko.net/blog/on-termkit
 
 ## How to use:
 
-Detailed instructions are available from these sources:
+### Modern NodeJS Installation (v14+)
+
+For installation and usage instructions with modern NodeJS, see the [Installation Guide](INSTALLATION.md).
+
+### Legacy Installation
+
+Detailed instructions for the original version are available from these sources:
 
 * [Mac OS X (OS X Daily)](http://osxdaily.com/2011/05/19/termkit-terminal-reimagined-how-to-install/)
 * [Windows (Redpoint blog)](http://blog.redpointsoftware.com.au/termkit/)
 * [Linux, Python GTK](https://github.com/unconed/TermKit/tree/master/Linux)
 * [Linux, Chrome only (Easytech blog)](http://blog.easytech.com.ar/2011/05/21/playing-with-termkit-with-chrome/) 
 
-Unfortunately, TermKit currently requires some assembly.
+**Note:** These legacy installation instructions are for older versions of NodeJS and may not work with current versions.
+
+For historical reference, the original installation steps were:
 
 1. Install the Mac development tools (Xcode and friends).
 2. [Install node.js](https://github.com/joyent/node/wiki/Installation).

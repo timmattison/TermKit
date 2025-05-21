@@ -255,7 +255,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "html=\"$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/HTML\"\nrm -rf \"$html/socket.io\"\nmkdir \"$html/socket.io\"\ncp -r ../../Node/node_modules/socket.io-client/* \"$html/socket.io\"";
+			shellScript = "html=\"$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/HTML\"\nrm -rf \"$html/socket.io\"\nmkdir -p \"$html/socket.io\"\nSOCKETIO_DIR=\"../../Node/node_modules/socket.io-client\"\nif [ -d \"$SOCKETIO_DIR\" ]; then\n  cp -r \"$SOCKETIO_DIR\"/* \"$html/socket.io\"\nelse\n  echo \"Warning: socket.io-client directory not found. Creating empty directory.\"\n  touch \"$html/socket.io/.placeholder\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 

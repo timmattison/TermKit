@@ -1,6 +1,7 @@
-var command = require('shell/command'),
-    returnMeta = require('misc').returnMeta,
-    autocomplete = require('shell/autocomplete').autocomplete;
+const path = require('path');
+var command = require(path.join(__dirname, 'command')),
+    returnMeta = require(path.join(__dirname, '..', 'misc')).returnMeta,
+    autocomplete = require(path.join(__dirname, 'autocomplete')).autocomplete;
 
 /**
  * Message processor.
@@ -80,7 +81,7 @@ exports.processor.prototype = {
           handler.call(this, message.args, exit);
         }
         // Dispatch to process viewIn.
-        else if (args.view && (view = this.views[args.view])) {
+        else if (message.args && message.args.view && (view = this.views[message.args.view])) {
           view.emit(message);
         }
       }

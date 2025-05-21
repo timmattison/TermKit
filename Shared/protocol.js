@@ -1,7 +1,7 @@
-var debug = false;
+var debug = true;
 if (typeof exports == 'undefined') {
   exports = termkit;
-  debug = false;
+  debug = true;
 }
 
 exports.protocol = function (connection, handler, autoconnect) {
@@ -109,21 +109,27 @@ exports.protocol.prototype = {
   },
   
   receive: function (message) {
-    if (typeof message == 'object') {
-      if (debug) {
-        var out = ['receiving'];
-        message.method && out.push(message.method);
-        message.args && out.push(message.args);
-        out.push(message);
-        console.log.apply(console, out);
+    try {
+      if (typeof message == 'object') {
+        if (debug) {
+          var out = ['receiving'];
+          message.method && out.push(message.method);
+          message.args && out.push(message.args);
+          out.push(message);
+          console.log.apply(console, out);
 
-        if (message.args && message.args.objects) {
-          for (i in message.args.objects) {
-            console.log('object', message.args.objects[i]);
+          if (message.args && message.args.objects) {
+            for (i in message.args.objects) {
+              console.log('object', message.args.objects[i]);
+            }
           }
         }
+        this.process(message);
+      } else {
+        console.error('[Protocol] Received non-object message:', message);
       }
-      this.process(message);
+    } catch (e) {
+      console.error('[Protocol] Error processing message:', e, message);
     }
   },
   

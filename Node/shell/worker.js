@@ -1,9 +1,11 @@
-require.paths.unshift('.');
-require.paths.unshift('..');
-require.paths.unshift(__dirname);
-require.paths.unshift(__dirname + '/..');
+// Modern Node.js module resolution
+const path = require('path');
 
-var processor = require('processor');
+// Add module search paths
+const currentDir = __dirname;
+const parentDir = path.join(__dirname, '..');
+
+var processor = require(path.join(currentDir, 'processor'));
 
 // Change to home directory.
 process.chdir(process.env.HOME);

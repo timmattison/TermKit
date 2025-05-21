@@ -1,6 +1,7 @@
+const path = require('path');
 var view = require('view/view'),
     whenDone = require('misc').whenDone,
-    meta = require('shell/meta'),
+    meta = require(path.join(__dirname, '..', 'meta')),
     http = require('http'),
     url = require('url');
     

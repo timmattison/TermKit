@@ -1,4 +1,5 @@
-var meta = require('shell/meta');
+const path = require('path');
+var meta = require(path.join(__dirname, '..', 'meta'));
 
 exports.main = function (tokens, pipes, exit, environment) {
 

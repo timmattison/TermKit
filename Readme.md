@@ -1,3 +1,5 @@
+NOTE: This isn't a fork because GitHub didn't allow me to use the "Issues" feature in a fork but this is not my project. This is from [unconed/TermKit](https://github.com/unconed/TermKit
+
 # TermKit
 
 ![TermKit Icon](https://github.com/unconed/TermKit/raw/master/Illustrator/TermKit%20Icon%20128.png)

@@ -133,10 +133,19 @@ var ioServer = new Server(server, {
     origin: ["http://localhost:2222", "http://127.0.0.1:2222"],
     methods: ["GET", "POST"],
     credentials: true
-  }
+  },
+  pingTimeout: 60000,   // 60 seconds timeout for pings
+  pingInterval: 25000,  // Send ping every 25 seconds
+  connectTimeout: 30000 // 30 seconds connection timeout
 }); 
 ioServer.on('connection', function (client) {
   console.log('[Socket.IO] New client connected');
+  
+  // Set up ping-pong to keep connection alive
+  client.on('ping', function(data) {
+    client.emit('pong', { timestamp: Date.now() });
+  });
+  
   var p = new router.router(client);
 });
 

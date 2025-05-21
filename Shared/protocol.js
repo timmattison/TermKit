@@ -114,9 +114,13 @@ exports.protocol.prototype = {
       }
       // Use emit for modern Socket.IO
       if (this.connection && typeof this.connection.emit === 'function') {
-        this.connection.emit('message', message);
+        try {
+          this.connection.emit('message', message);
+        } catch (e) {
+          console.error('[Protocol] Error sending message:', e);
+        }
       } else {
-        console.error('Connection object missing or does not have emit function');
+        console.error('[Protocol] Connection object missing or does not have emit function');
       }
     }
   },

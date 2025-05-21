@@ -21,10 +21,17 @@ exports.router = function (connection) {
       }
     },
     emit: function(event, data) {
-      connection.emit(event, data);
+      // Make sure connection is still active before emitting
+      if (connection && connection.connected) {
+        connection.emit(event, data);
+      } else {
+        console.error('[Router] Attempted to emit on disconnected socket');
+      }
     },
     disconnect: function() {
-      connection.disconnect();
+      if (connection && connection.connected) {
+        connection.disconnect();
+      }
     }
   };
 
@@ -33,10 +40,25 @@ exports.router = function (connection) {
   this.sessions = {};
   this.counter = 1;
   
+  // Ping interval to keep the connection alive
+  this.pingInterval = setInterval(function() {
+    if (connection && connection.connected) {
+      connection.emit('ping', { timestamp: Date.now() });
+    } else {
+      clearInterval(that.pingInterval);
+    }
+  }, 30000); // 30 second ping
+
   // Log disconnect events
   connection.on('disconnect', function() {
     console.log('[Router] Client disconnected');
+    clearInterval(that.pingInterval);
     that.disconnect();
+  });
+  
+  // Handle errors
+  connection.on('error', function(error) {
+    console.error('[Router] Socket.IO error:', error);
   });
 };
 
@@ -90,10 +112,26 @@ exports.router.prototype = {
 
   disconnect: function () {
     console.log('[Router] Disconnecting and cleaning up sessions');
-    for (i in this.sessions) {
-      this.sessions[i].close();
+    // Clean up interval if it exists
+    if (this.pingInterval) {
+      clearInterval(this.pingInterval);
+      this.pingInterval = null;
     }
+    
+    // Close all sessions properly
+    for (var i in this.sessions) {
+      try {
+        console.log(`[Router] Closing session ${i}`);
+        this.sessions[i].close();
+      } catch (e) {
+        console.error(`[Router] Error closing session ${i}:`, e);
+      }
+    }
+    
+    // Clear all sessions
     this.sessions = {};
+    
+    // Clear protocol reference
     this.protocol = null;
   },
 

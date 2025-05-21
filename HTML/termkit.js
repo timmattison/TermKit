@@ -9,24 +9,35 @@ $(document).ready(function () {
 
   try {
     var client = new termkit.client();
+    var shellCreated = false;
     
     client.onConnect = function () {
       console.log("Connected to TermKit server");
       try {
-        var shell = new termkit.client.shell(client, {}, function (shell) {
-          console.log("Shell created successfully");
-          var view = new termkit.commandView(shell);
-          $('#terminal').append(view.$element);
-          view.newCommand();
-        });
+        // Only create a new shell if one doesn't exist
+        if (!shellCreated) {
+          var shell = new termkit.client.shell(client, {}, function (shell) {
+            console.log("Shell created successfully");
+            shellCreated = true;
+            var view = new termkit.commandView(shell);
+            $('#terminal').append(view.$element);
+            view.newCommand();
+          });
+        }
       } catch (e) {
         console.error("Error creating shell:", e);
+        $('#terminal').append('<div class="error">Error creating shell: ' + e.message + '</div>');
       }
     };
     
     client.onDisconnect = function() {
       console.log("Disconnected from TermKit server");
       $('#terminal').append('<div class="error">Disconnected from server. Please refresh the page to reconnect.</div>');
+      
+      // Set up auto-reconnect after 5 seconds
+      setTimeout(function() {
+        window.location.reload();
+      }, 5000);
     };
     
     client.onError = function(error) {

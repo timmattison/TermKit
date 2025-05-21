@@ -18,8 +18,11 @@ var tc = termkit.client = function () {
   var host = window.location.hostname || 'localhost';
   console.log("Connecting to Socket.IO server at http://" + host + ":2222");
   var s = this.socket = io('http://' + host + ':2222', {
-    reconnectionAttempts: 5,
-    timeout: 10000, // Increase timeout to 10s
+    reconnection: true,
+    reconnectionAttempts: 10,
+    reconnectionDelay: 1000,
+    reconnectionDelayMax: 5000,
+    timeout: 20000, // Increase timeout to 20s
   });
   
   // Use shared protocol handler with back-end.

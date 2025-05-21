@@ -24,6 +24,19 @@ const htmlDir = path.join(__dirname, '..', 'HTML');
 var server = http.createServer(function (request, response) { 
   console.log(`[HTTP] ${request.method} ${request.url}`);
   
+  // Add CORS headers
+  response.setHeader('Access-Control-Allow-Origin', request.headers.origin || '*');
+  response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  response.setHeader('Access-Control-Allow-Credentials', 'true');
+  
+  // Handle OPTIONS preflight requests
+  if (request.method === 'OPTIONS') {
+    response.writeHead(200);
+    response.end();
+    return;
+  }
+  
   // Handle root request
   if (request.url === '/' || request.url === '/index.html') {
     const filePath = path.join(htmlDir, 'index.html');
@@ -115,7 +128,13 @@ server.listen(2222, () => {
 });
 
 // Set up WebSocket and handlers.
-var ioServer = new Server(server); 
+var ioServer = new Server(server, {
+  cors: {
+    origin: ["http://localhost:2222", "http://127.0.0.1:2222"],
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+}); 
 ioServer.on('connection', function (client) {
   console.log('[Socket.IO] New client connected');
   var p = new router.router(client);

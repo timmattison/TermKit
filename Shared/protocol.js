@@ -1,9 +1,12 @@
 var debug = true;
+// Handle both Node.js and browser environments
 if (typeof exports == 'undefined') {
-  exports = termkit;
+  // Browser environment
+  var exports = termkit;
   debug = true;
 }
 
+// Define the protocol constructor
 exports.protocol = function (connection, handler, autoconnect) {
   
   this.connection = connection;

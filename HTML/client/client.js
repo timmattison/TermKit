@@ -15,8 +15,9 @@ var tc = termkit.client = function () {
   this.onError = function () {};
 
   // Open socket to back-end.
-  console.log("Connecting to Socket.IO server at http://localhost:2222");
-  var s = this.socket = io('http://localhost:2222', {
+  var host = window.location.hostname || 'localhost';
+  console.log("Connecting to Socket.IO server at http://" + host + ":2222");
+  var s = this.socket = io('http://' + host + ':2222', {
     reconnectionAttempts: 5,
     timeout: 10000, // Increase timeout to 10s
   });

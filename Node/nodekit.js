@@ -43,6 +43,37 @@ var server = http.createServer(function (request, response) {
     return;
   }
   
+  // Special case for socket.io client files
+  if (request.url.startsWith('/socket.io-client/')) {
+    // Map to the actual node_modules path
+    const socketIOPath = path.join(__dirname, '..', 'node_modules', request.url);
+    console.log(`[HTTP] Socket.IO client request, mapping to ${socketIOPath}`);
+    
+    fs.stat(socketIOPath, (err, stats) => {
+      if (err || !stats.isFile()) {
+        console.error(`[ERROR] Socket.IO file not found: ${socketIOPath}`);
+        response.writeHead(404);
+        response.end('Socket.IO file not found');
+        return;
+      }
+      
+      fs.readFile(socketIOPath, (err, content) => {
+        if (err) {
+          console.error(`[ERROR] Failed to read Socket.IO file: ${err.message}`);
+          response.writeHead(500);
+          response.end('Error loading Socket.IO file');
+          return;
+        }
+        
+        const mimeType = mime.getType(socketIOPath) || 'application/javascript';
+        console.log(`[HTTP] Serving Socket.IO file as ${mimeType}`);
+        response.writeHead(200, {'Content-Type': mimeType});
+        response.end(content);
+      });
+    });
+    return;
+  }
+  
   // Handle other static files
   const filePath = path.join(htmlDir, request.url);
   

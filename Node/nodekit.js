@@ -87,6 +87,36 @@ var server = http.createServer(function (request, response) {
     return;
   }
   
+  // Special case for Shared directory files
+  if (request.url.startsWith('/Shared/')) {
+    const sharedFilePath = path.join(__dirname, '..', request.url);
+    console.log(`[HTTP] Shared file request, mapping to ${sharedFilePath}`);
+    
+    fs.stat(sharedFilePath, (err, stats) => {
+      if (err || !stats.isFile()) {
+        console.error(`[ERROR] Shared file not found: ${sharedFilePath}`);
+        response.writeHead(404);
+        response.end('Shared file not found');
+        return;
+      }
+      
+      fs.readFile(sharedFilePath, (err, content) => {
+        if (err) {
+          console.error(`[ERROR] Failed to read Shared file: ${err.message}`);
+          response.writeHead(500);
+          response.end('Error loading Shared file');
+          return;
+        }
+        
+        const mimeType = mime.getType(sharedFilePath) || 'application/javascript';
+        console.log(`[HTTP] Serving Shared file as ${mimeType}`);
+        response.writeHead(200, {'Content-Type': mimeType});
+        response.end(content);
+      });
+    });
+    return;
+  }
+  
   // Handle other static files
   const filePath = path.join(htmlDir, request.url);
   

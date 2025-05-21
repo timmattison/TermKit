@@ -2,8 +2,13 @@ var debug = true;
 // Handle both Node.js and browser environments
 if (typeof exports == 'undefined') {
   // Browser environment
-  var exports = termkit;
-  debug = true;
+  if (typeof window !== 'undefined' && window.termkit) {
+    var exports = window.termkit;
+    debug = true;
+  } else {
+    console.error('termkit object not found in window');
+    var exports = {};
+  }
 }
 
 // Define the protocol constructor
@@ -107,7 +112,12 @@ exports.protocol.prototype = {
         out.push(message);
         console.log.apply(console, out);
       }
-      this.connection.json.send(message);
+      // Use emit for modern Socket.IO
+      if (this.connection && typeof this.connection.emit === 'function') {
+        this.connection.emit('message', message);
+      } else {
+        console.error('Connection object missing or does not have emit function');
+      }
     }
   },
   

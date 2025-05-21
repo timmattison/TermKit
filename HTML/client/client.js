@@ -23,6 +23,47 @@ var tc = termkit.client = function () {
   });
   
   // Use shared protocol handler with back-end.
+  if (!termkit.protocol || typeof termkit.protocol !== 'function') {
+    console.error("termkit.protocol constructor not found, initializing fallback");
+    // Define a local protocol constructor if the shared one isn't available
+    termkit.protocol = function(connection, handler, autoconnect) {
+      this.connection = connection;
+      this.handler = handler;
+      
+      var that = this;
+      connection.on('message', function(data) {
+        that.receive(data);
+      });
+      
+      this.send = function(message) {
+        console.log("Sending message:", message);
+        connection.emit('message', message);
+      };
+      
+      this.receive = function(message) {
+        console.log("Received message:", message);
+        handler.dispatch(message);
+      };
+      
+      this.notify = function(method, args, meta) {
+        meta = meta || {};
+        if (method) meta.method = method;
+        if (args) meta.args = args;
+        this.send(meta);
+      };
+      
+      this.query = function(method, args, meta, callback) {
+        meta = meta || {};
+        meta.query = Math.floor(Math.random() * 10000);
+        
+        connection.callbacks = connection.callbacks || {};
+        connection.callbacks[meta.query] = callback;
+        
+        this.notify(method, args, meta);
+      };
+    };
+  }
+  
   this.protocol = new termkit.protocol(this.socket, this);
   
   s.on('connect', function () {

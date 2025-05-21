@@ -10,7 +10,25 @@ exports.router = function (connection) {
   var that = this;
   console.log('[Router] Creating new router instance');
 
-  this.protocol = new protocol.protocol(connection, this, true);
+  // Create a Socket.IO connection wrapper for protocol
+  var connectionWrapper = {
+    on: function(event, callback) {
+      if (event === 'connect') {
+        // Socket.IO connection is already established
+        setTimeout(callback, 0);
+      } else {
+        connection.on(event, callback);
+      }
+    },
+    emit: function(event, data) {
+      connection.emit(event, data);
+    },
+    disconnect: function() {
+      connection.disconnect();
+    }
+  };
+
+  this.protocol = new protocol.protocol(connectionWrapper, this, true);
 
   this.sessions = {};
   this.counter = 1;

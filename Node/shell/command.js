@@ -1,12 +1,13 @@
+const path = require('path');
 var EventEmitter = require("events").EventEmitter,
-    outputFormatter = require('shell/formatter').formatter;
+    outputFormatter = require(path.join(__dirname, 'formatter')).formatter,
     spawn = require('child_process').spawn,
-    view = require('view/view'),
-    meta = require('shell/meta'),
-    builtin = require('shell/builtin/builtin'),
-    async = require('misc').async,
-    whenDone = require('misc').whenDone,
-    returnObject = require('misc').returnObject,
+    view = require(path.join(__dirname, '..', 'view/view')),
+    meta = require(path.join(__dirname, 'meta')),
+    builtin = require(path.join(__dirname, 'builtin/builtin')),
+    async = require(path.join(__dirname, '..', 'misc')).async,
+    whenDone = require(path.join(__dirname, '..', 'misc')).whenDone,
+    returnObject = require(path.join(__dirname, '..', 'misc')).returnObject,
 
     outputViewCounter = 1;
 
@@ -189,7 +190,7 @@ exports.commandUnit.builtinCommand.prototype.spawn = function () {
 
   // Load handler.
   try {
-    this.handler = require('builtin/' + prefix);
+    this.handler = require(path.join(__dirname, 'builtin', prefix));
   } catch (e) {
     throw "Error loading handler '"+ prefix +"': " + e;
   }
@@ -202,8 +203,8 @@ exports.commandUnit.builtinCommand.prototype.spawn = function () {
 
   // Helper for converting strings to buffers.
   function buffer(data) {
-    if (data.constructor != Buffer) {
-      data = new Buffer(data, 'utf8');
+    if (!Buffer.isBuffer(data)) {
+      data = Buffer.from(data, 'utf8');
     }
     return data;
   }

@@ -1,15 +1,16 @@
+const path = require('path');
 var fs = require('fs'),
-    meta = require('shell/meta'),
-    view = require('view/view'),
-    asyncCallback = require('misc').asyncCallback;
-    async = require('misc').async,
-    extend = require('misc').extend,
-    JSONPretty = require('misc').JSONPretty,
-    composePath = require('misc').composePath,
-    objectKeys = require('misc').objectKeys,
-    reader = require('reader'),
-    escapeBinary = require('misc').escapeBinary,
-    escapeUnixText = require('misc').escapeUnixText;
+    meta = require(path.join(__dirname, 'meta')),
+    view = require(path.join(__dirname, '..', 'view/view')),
+    asyncCallback = require(path.join(__dirname, '..', 'misc')).asyncCallback,
+    async = require(path.join(__dirname, '..', 'misc')).async,
+    extend = require(path.join(__dirname, '..', 'misc')).extend,
+    JSONPretty = require(path.join(__dirname, '..', 'misc')).JSONPretty,
+    composePath = require(path.join(__dirname, '..', 'misc')).composePath,
+    objectKeys = require(path.join(__dirname, '..', 'misc')).objectKeys,
+    reader = require(path.join(__dirname, '..', 'reader')),
+    escapeBinary = require(path.join(__dirname, '..', 'misc')).escapeBinary,
+    escapeUnixText = require(path.join(__dirname, '..', 'misc')).escapeUnixText;
 
 /**
  * Error logger.

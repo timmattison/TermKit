@@ -17,8 +17,8 @@ exports.returnMeta = function (status, meta) {
   meta = meta || {};
 
   if (typeof status == 'number') {
-    status = number > 0;
-    code = number;
+    status = status > 0;
+    code = status;
   }
   else if (typeof status == 'boolean') {
     code = +status;

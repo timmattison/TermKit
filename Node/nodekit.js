@@ -3,11 +3,13 @@ var termkit = {
   version: 1,
 };
 
-require.paths.unshift(__dirname + '/../Shared/');
+// Add shared path to module paths
+const path = require('path');
+const sharedPath = path.join(__dirname, '..', 'Shared');
 
 // Load requirements.
 var http = require('http'),  
-    io = require('socket.io-node'),
+    { Server } = require('socket.io'),
     router = require("./router");
 
 // Load config file.
@@ -23,7 +25,7 @@ var server = http.createServer(function (request, result) {
 server.listen(2222);
 
 // Set up WebSocket and handlers.
-var ioServer = io.listen(server); 
-ioServer.sockets.on('connection', function (client) {
+var ioServer = new Server(server); 
+ioServer.on('connection', function (client) {
   var p = new router.router(client);
 });

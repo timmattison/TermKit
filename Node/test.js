@@ -5,21 +5,22 @@ var termkit = {
   version: 1,
   test: true,
 };
-require.paths.unshift('./socket.io-node/lib');
-require.paths.unshift('.');
-require.paths.unshift('shell');
-require.paths.unshift('../Shared/');
 
-var whenDone = require('misc').whenDone;
+// Modern module resolution
+const path = require('path');
+const sharedPath = path.join(__dirname, '..', 'Shared');
+const shellPath = path.join(__dirname, 'shell');
+
+var whenDone = require('./misc').whenDone;
 var EventEmitter = require("events").EventEmitter;
 
-var router = require("router");
-var processor = require("shell/processor");
-var meta = require("shell/meta");
-var reader = require("shell/reader");
-var autocomplete = require("shell/autocomplete");
-var misc = require("misc");
-var grep = require("shell/builtin/grep");
+var router = require("./router");
+var processor = require(path.join(shellPath, "processor"));
+var meta = require(path.join(shellPath, "meta"));
+var reader = require(path.join(shellPath, "reader"));
+var autocomplete = require(path.join(shellPath, "autocomplete"));
+var misc = require("./misc");
+var grep = require(path.join(shellPath, "builtin/grep"));
 
 var asserts = [];
 function assert(condition, message) {
@@ -330,8 +331,8 @@ function mockPipes() {
 
   // Helper for converting strings to buffers.
   function buffer(data) {
-    if (data.constructor != Buffer) {
-      data = new Buffer(data, 'utf8');
+    if (!Buffer.isBuffer(data)) {
+      data = Buffer.from(data, "utf8");
     }
     return data;
   }
@@ -397,8 +398,8 @@ function testGrep(assert) {
 
   // Helper for converting strings to buffers.
   function buffer(data) {
-    if (data.constructor != Buffer) {
-      data = new Buffer(data, 'utf8');
+    if (!Buffer.isBuffer(data)) {
+      data = Buffer.from(data, "utf8");
     }
     return data;
   }

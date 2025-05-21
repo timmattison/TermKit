@@ -15,3 +15,5 @@ TermKit.app
 *.pbxuser
 *.perspectivev3
 
+node_modules
+pnpm-lock.yaml

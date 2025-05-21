@@ -1,4 +1,4 @@
-NOTE: This isn't a fork because GitHub didn't allow me to use the "Issues" feature in a fork but this is not my project. This is from [unconed/TermKit](https://github.com/unconed/TermKit
+NOTE: This isn't a fork because GitHub didn't allow me to use the "Issues" feature in a fork but this is not my project. This is from [unconed/TermKit](https://github.com/unconed/TermKit)
 
 # TermKit
 

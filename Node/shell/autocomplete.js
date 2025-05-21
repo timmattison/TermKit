@@ -1,5 +1,6 @@
+const path = require('path');
 var fs = require('fs'),
-    builtin = require('shell/builtin/builtin');
+    builtin = require(path.join(__dirname, 'builtin', 'builtin'));
 
 /*
 

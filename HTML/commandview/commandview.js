@@ -1,8 +1,8 @@
 (function ($) {
 
 /**
- * Controller for command view.
- */
+  * Controller for command view.
+  */
 var cv = termkit.commandView = function (shell) {
   var that = this;
 
@@ -80,6 +80,12 @@ cv.prototype = {
     this.activeIndex = this.commandList.length - 1;
     this.updateElement();
     command.tokenField.focus();
+  },
+  
+  // Update the prompt to reflect the current working directory
+  updatePrompt: function () {
+    // Create a new command with the updated environment
+    this.newCommand();
   },
   
   // Show an error message in the current or most recent command

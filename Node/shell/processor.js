@@ -148,6 +148,28 @@ workerProcessor.handlers = {
   },
   
   /**
+   * Update current working directory in parent process
+   */
+  "shell.updatecwd": function (args, exit) {
+    if (args && args.cwd) {
+      // Actually change the directory in this process too
+      try {
+        process.chdir(args.cwd);
+        if (exit) exit(true);
+      }
+      catch (error) {
+        if (exit) exit(false, { error: error.message });
+      }
+      
+      // Forward message to parent to update its state
+      this.notify('shell.updatecwd', { cwd: args.cwd });
+    }
+    else if (exit) {
+      exit(false);
+    }
+  },
+  
+  /**
    * Autocomplete the command line.
    */
   "shell.autocomplete": function (args, exit) {

@@ -11,19 +11,24 @@ exports.main = function (tokens, pipes, exit, environment) {
     out.print('Usage: cd [dir]');
     return exit(false);
   }
-  var path = tokens[1] || '~';
+  var dirPath = tokens[1] || '~';
   
   // Complete path
-  expandPath(path, function (path) {
+  expandPath(dirPath, function (expandedPath) {
     // Try to change working dir.
     try {
-      process.chdir(path);
+      process.chdir(expandedPath);
+      
+      // Send notification to update parent process working directory
+      pipes.viewOut('shell.updatecwd', { 
+        cwd: process.cwd() 
+      });
+      
+      exit(true);
     }
     catch (error) {
-      out.print(error.message + ' (' + path + ')');
+      out.print(error.message + ' (' + expandedPath + ')');
       return exit(false);
     }
-
-    exit(true);
   }); // expandPath
 };

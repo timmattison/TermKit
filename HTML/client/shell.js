@@ -90,6 +90,20 @@ tc.shell.prototype = {
         }
         break;
       
+      case 'shell.updatecwd':
+        // Update the environment with the new working directory
+        if (args.cwd) {
+          console.log("Updating working directory to:", args.cwd);
+          this.environment = this.environment || {};
+          this.environment.cwd = args.cwd;
+          
+          // Update command view prompt if exists
+          if (this.commandView && typeof this.commandView.updatePrompt === 'function') {
+            this.commandView.updatePrompt();
+          }
+        }
+        break;
+      
       case 'view.open':
         var frame = this.frames[args.rel];
 

@@ -1,15 +1,16 @@
+const path = require('path');
 var fs = require('fs'),
-    meta = require('shell/meta'),
-    view = require('view/view'),
-    asyncCallback = require('misc').asyncCallback;
-    async = require('misc').async,
-    extend = require('misc').extend,
-    JSONPretty = require('misc').JSONPretty,
-    composePath = require('misc').composePath,
-    objectKeys = require('misc').objectKeys,
-    reader = require('reader'),
-    escapeBinary = require('misc').escapeBinary,
-    escapeUnixText = require('misc').escapeUnixText;
+    meta = require(path.join(__dirname, 'meta')),
+    view = require(path.join(__dirname, '..', 'view/view')),
+    asyncCallback = require(path.join(__dirname, '..', 'misc')).asyncCallback,
+    async = require(path.join(__dirname, '..', 'misc')).async,
+    extend = require(path.join(__dirname, '..', 'misc')).extend,
+    JSONPretty = require(path.join(__dirname, '..', 'misc')).JSONPretty,
+    composePath = require(path.join(__dirname, '..', 'misc')).composePath,
+    objectKeys = require(path.join(__dirname, '..', 'misc')).objectKeys,
+    reader = require(path.join(__dirname, '..', 'shell/reader')),
+    escapeBinary = require(path.join(__dirname, '..', 'misc')).escapeBinary,
+    escapeUnixText = require(path.join(__dirname, '..', 'misc')).escapeUnixText;
 
 /**
  * Error logger.
@@ -134,7 +135,7 @@ exports.plugins.text.prototype = extend(new exports.plugin(), {
 
 exports.plugins.text.supports = function (headers) {
   var type = headers.get('Content-Type');
-  return !!(/^text\//(type)) * 1;
+  return !!(/^text\//.test(type)) * 1;
 }
 
 /**
@@ -168,7 +169,7 @@ exports.plugins.pdf.prototype = extend(new exports.plugin(), {
 
 exports.plugins.pdf.supports = function (headers) {
   var type = headers.get('Content-Type');
-  return !!(/^application\/pdf/(type)) * 2;
+  return !!(/^application\/pdf/.test(type)) * 2;
 }
 
 /**
@@ -202,7 +203,7 @@ exports.plugins.html.prototype = extend(new exports.plugin(), {
 
 exports.plugins.html.supports = function (headers) {
   var type = headers.get('Content-Type');
-  return !!(/^text\/html/(type)) * 2;
+  return !!(/^text\/html/.test(type)) * 2;
 }
 
 /**
@@ -286,7 +287,7 @@ exports.plugins.image.prototype = extend(new exports.plugin(), {
 
 exports.plugins.image.supports = function (headers) {
   var type = headers.get('Content-Type');
-  return !!(/^image\//(type)) * 1;
+  return !!(/^image\//.test(type)) * 1;
 };
 
 /**
@@ -373,7 +374,7 @@ exports.plugins.files.prototype = extend(new exports.plugin(), {
 exports.plugins.files.supports = function (headers) {
   var type = headers.get('Content-Type'),
       schema = headers.get('Content-Type', 'schema');
-  return !!(/^application\/json$/(type) && (schema == 'termkit.files')) * 3;
+  return !!(/^application\/json$/.test(type) && (schema == 'termkit.files')) * 3;
 };
 
 /**
@@ -401,7 +402,7 @@ exports.plugins.unix.prototype = extend(new exports.plugin(), {
 exports.plugins.unix.supports = function (headers) {
   var type = headers.get('Content-Type'),
       schema = headers.get('Content-Type', 'schema');
-  return !!(/^application\/octet-stream$/(type) && (schema == 'termkit.unix')) * 3;
+  return !!(/^application\/octet-stream$/.test(type) && (schema == 'termkit.unix')) * 3;
 }
 
 /**
@@ -428,7 +429,7 @@ exports.plugins.binary.prototype = extend(new exports.plugin(), {
 
 exports.plugins.binary.supports = function (headers) {
   var type = headers.get('Content-Type');
-  return !!(/^application\/octet-stream/(type)) * 1;
+  return !!(/^application\/octet-stream/.test(type)) * 1;
 }
 
 /**
@@ -481,6 +482,6 @@ exports.plugins.hex.prototype = extend(new exports.plugin(), {
 exports.plugins.hex.supports = function (headers) {
   var type = headers.get('Content-Type'),
       schema = headers.get('Content-Type', 'schema');
-  return !!(/^application\/octet-stream$/(type) && (schema == 'termkit.hex')) * 3;
+  return !!(/^application\/octet-stream$/.test(type) && (schema == 'termkit.hex')) * 3;
 }
 

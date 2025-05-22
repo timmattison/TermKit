@@ -37,11 +37,32 @@ tc.shell.prototype = {
   },
   
   query: function (method, args, callback) {
-    this.client.protocol.query(method, args, { session: this.id }, callback);
+    try {
+      console.log("Shell query:", method, this.id);
+      this.client.protocol.query(method, args, { session: this.id }, function(message) {
+        if (callback && typeof callback === 'function') {
+          try {
+            callback(message);
+          } catch (e) {
+            console.error("Error in shell query callback:", e);
+          }
+        }
+      });
+    } catch (e) {
+      console.error("Error sending query to shell:", e);
+      if (callback && typeof callback === 'function') {
+        callback({ success: false, error: e.message });
+      }
+    }
   },
 
   notify: function (method, args) {
-    this.client.protocol.notify(method, args, { session: this.id });
+    try {
+      console.log("Shell notify:", method, this.id);
+      this.client.protocol.notify(method, args, { session: this.id });
+    } catch (e) {
+      console.error("Error sending notification to shell:", e);
+    }
   },
   
   dispatch: function (method, args) {

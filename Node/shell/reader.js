@@ -1,12 +1,14 @@
+const path = require('path');
 var fs = require('fs'),
-    meta = require('shell/meta'),
-    view = require('view/view'),
-    asyncCallback = require('misc').asyncCallback;
-    async = require('misc').async,
-    extend = require('misc').extend,
-    JSONPretty = require('misc').JSONPretty,
-    composePath = require('misc').composePath,
-    expandPath = require('misc').expandPath;
+    meta = require(path.join(__dirname, 'meta')),
+    view = require(path.join(__dirname, '..', 'view/view')),
+    asyncCallback = require(path.join(__dirname, '..', 'misc')).asyncCallback,
+    async = require(path.join(__dirname, '..', 'misc')).async,
+    extend = require(path.join(__dirname, '..', 'misc')).extend,
+    JSONPretty = require(path.join(__dirname, '..', 'misc')).JSONPretty,
+    composePath = require(path.join(__dirname, '..', 'misc')).composePath,
+    expandPath = require(path.join(__dirname, '..', 'misc')).expandPath,
+    whenDone = require(path.join(__dirname, '..', 'misc')).whenDone;
 
 // Is x an object?
 function isObject(x) {
@@ -91,7 +93,7 @@ exports.dataReader.prototype = {
         var length = this.length = parseInt(this.headers.get('Content-Length'));
         if (this.buffered && !isNaN(length)) {
           // Allocate large buffer.
-          this.buffer = new Buffer(length);
+          this.buffer = Buffer.alloc(length);
         }
         else {
           this.length = 0;
@@ -142,7 +144,7 @@ exports.dataReader.prototype = {
     if (this.buffered) {
 
       if (!this.buffer) {
-        this.buffer = new Buffer(this.length);
+        this.buffer = Buffer.alloc(this.length);
 
         // Join chunks.
         for (i in this.chunks) {
@@ -214,7 +216,7 @@ exports.fileReader.prototype = {
         
           var position = 0;
           (function read() {
-            var buffer = new Buffer(chunkSize);
+            var buffer = Buffer.alloc(chunkSize);
             fs.read(fd, buffer, 0, chunkSize, position, track(function (err, bytesRead) {
               if (err) {
                 errors++;
@@ -354,7 +356,7 @@ exports.filesReader.prototype = {
             return;
           }
 
-          var buffer = new Buffer(chunkSize);
+          var buffer = Buffer.alloc(chunkSize);
           fs.read(fd, buffer, 0, chunkSize, 0, track(function (err, bytesRead) {
             if (err) {
               errors++;
@@ -438,7 +440,7 @@ exports.filesReader.prototype = {
     var type = 'application/octed-stream';
     
     prefix = commonPrefix(types);
-    if (!(/^[^\/]+\/[^\/]+$/(prefix))) {
+    if (!(/^[^\/]+\/[^\/]+$/.test(prefix))) {
       // If we only matched a type category (e.g. text/),
       // coerce types to their base.
       types = types.map(function (type) {
@@ -446,7 +448,7 @@ exports.filesReader.prototype = {
       });
       prefix = commonPrefix(types);
       
-      if (!(/^[^\/]+\/[^\/]+$/(prefix))) {
+      if (!(/^[^\/]+\/[^\/]+$/.test(prefix))) {
         // Replace with generic type.
         type = meta.default(prefix) || 'application/octet-stream';
       }
@@ -495,7 +497,7 @@ exports.filesReader.prototype = {
 
     // If buffered, create buffer of appropriate size.
     if (this.buffered) {
-      this.buffer = new Buffer(size);
+      this.buffer = Buffer.alloc(size);
     }
     
     // File reader pass-through handler.

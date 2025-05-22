@@ -1,9 +1,17 @@
-var debug = false;
+var debug = true;
+// Handle both Node.js and browser environments
 if (typeof exports == 'undefined') {
-  exports = termkit;
-  debug = false;
+  // Browser environment
+  if (typeof window !== 'undefined' && window.termkit) {
+    var exports = window.termkit;
+    debug = true;
+  } else {
+    console.error('termkit object not found in window');
+    var exports = {};
+  }
 }
 
+// Define the protocol constructor
 exports.protocol = function (connection, handler, autoconnect) {
   
   this.connection = connection;
@@ -104,26 +112,41 @@ exports.protocol.prototype = {
         out.push(message);
         console.log.apply(console, out);
       }
-      this.connection.json.send(message);
+      // Use emit for modern Socket.IO
+      if (this.connection && typeof this.connection.emit === 'function') {
+        try {
+          this.connection.emit('message', message);
+        } catch (e) {
+          console.error('[Protocol] Error sending message:', e);
+        }
+      } else {
+        console.error('[Protocol] Connection object missing or does not have emit function');
+      }
     }
   },
   
   receive: function (message) {
-    if (typeof message == 'object') {
-      if (debug) {
-        var out = ['receiving'];
-        message.method && out.push(message.method);
-        message.args && out.push(message.args);
-        out.push(message);
-        console.log.apply(console, out);
+    try {
+      if (typeof message == 'object') {
+        if (debug) {
+          var out = ['receiving'];
+          message.method && out.push(message.method);
+          message.args && out.push(message.args);
+          out.push(message);
+          console.log.apply(console, out);
 
-        if (message.args && message.args.objects) {
-          for (i in message.args.objects) {
-            console.log('object', message.args.objects[i]);
+          if (message.args && message.args.objects) {
+            for (i in message.args.objects) {
+              console.log('object', message.args.objects[i]);
+            }
           }
         }
+        this.process(message);
+      } else {
+        console.error('[Protocol] Received non-object message:', message);
       }
-      this.process(message);
+    } catch (e) {
+      console.error('[Protocol] Error processing message:', e, message);
     }
   },
   

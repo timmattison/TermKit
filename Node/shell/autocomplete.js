@@ -1,5 +1,8 @@
+const path = require('path');
 var fs = require('fs'),
-    builtin = require('shell/builtin/builtin');
+    builtin = require(path.join(__dirname, 'builtin', 'builtin')),
+    whenDone = require(path.join(__dirname, '..', 'misc')).whenDone,
+    extend = require(path.join(__dirname, '..', 'misc')).extend;
 
 /*
 
@@ -118,7 +121,7 @@ exports.autocomplete.prototype = {
 
     // Trailing slashes.
     function trail(path) {
-      if (!(/\/$/(path))) {
+      if (!(/\/$/.test(path))) {
         path += '/';
       }
       return path;

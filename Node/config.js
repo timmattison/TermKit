@@ -1,6 +1,7 @@
+const path = require('path');
 var EventEmitter = require('events').EventEmitter,
-    extend = require('./misc').extend,
-    composePath = require('./misc').composePath,
+    extend = require(path.join(__dirname, 'misc')).extend,
+    composePath = require(path.join(__dirname, 'misc')).composePath,
     fs = require('fs'),
     singleton;
 

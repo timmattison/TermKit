@@ -1,6 +1,8 @@
 const path = require('path');
 var fs = require('fs'),
-    builtin = require(path.join(__dirname, 'builtin', 'builtin'));
+    builtin = require(path.join(__dirname, 'builtin', 'builtin')),
+    whenDone = require(path.join(__dirname, '..', 'misc')).whenDone,
+    extend = require(path.join(__dirname, '..', 'misc')).extend;
 
 /*
 

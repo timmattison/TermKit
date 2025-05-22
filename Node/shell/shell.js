@@ -1,9 +1,10 @@
+const path = require('path');
 var fs = require('fs'), net = require('net');
 
 var spawn = require('child_process').spawn,
     exec = require('child_process').exec;
 
-var config = require('../config').getConfig();
+var config = require(path.join(__dirname, '..', 'config')).getConfig();
 
 /**
  * Interface to shell worker.
@@ -20,14 +21,14 @@ exports.shell = function (args, router) {
   var that = this;
   
   // Extract location of source.
-  var p, path = process.argv[1].split('/');
-  path[path.length - 1] = 'shell/worker.js';
-  path = path.join('/');
+  var p, sourcePath = process.argv[1].split('/');
+  sourcePath[sourcePath.length - 1] = 'shell/worker.js';
+  var workerPath = path.join(__dirname, 'worker.js');
   
   // Determine user identity.
   if (user == process.env.USER) {
     // Spawn regular worker.
-    p = this.process = spawn('node', [ path ], {
+    p = this.process = spawn('node', [ workerPath ], {
       cwd: process.cwd(),
     });
   }

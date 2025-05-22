@@ -12,10 +12,10 @@ const mime = require('mime');
 // Load requirements.
 var http = require('http'),  
     { Server } = require('socket.io'),
-    router = require("./router");
+    router = require(path.join(__dirname, 'router'));
 
 // Load config file.
-var config = require('./config').getConfig();
+var config = require(path.join(__dirname, 'config')).getConfig();
 
 // HTML directory path
 const htmlDir = path.join(__dirname, '..', 'HTML');

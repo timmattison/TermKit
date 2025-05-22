@@ -1,5 +1,6 @@
+const path = require('path');
 var view = require('view/view'),
-    reader = require('shell/reader'),
+    reader = require(path.join(__dirname, '..', 'reader')),
     parseArgs = require('misc').parseArgs;
 
 exports.main = function (tokens, pipes, exit, environment) {

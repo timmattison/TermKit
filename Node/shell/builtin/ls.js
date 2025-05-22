@@ -1,10 +1,11 @@
+const path = require('path');
 var fs = require('fs'),
     view = require('view/view'),
     composePath = require('misc').composePath,
     whenDone = require('misc').whenDone,
     EventEmitter = require('events').EventEmitter,
     async = require('misc').async,
-    meta = require('shell/meta'),
+    meta = require(path.join(__dirname, '..', 'meta')),
     expandPath = require('misc').expandPath,
     parseArgs = require('misc').parseArgs;
 

@@ -1,6 +1,6 @@
-var shell = require('./shell');
-var returnMeta = require('./misc').returnMeta;
-var path = require('path');
+const path = require('path');
+var shell = require(path.join(__dirname, 'shell'));
+var returnMeta = require(path.join(__dirname, 'misc')).returnMeta;
 var protocol = require(path.join(__dirname, '..', 'Shared', 'protocol'));
 
 /**

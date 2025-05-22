@@ -1,3 +1,4 @@
+const path = require('path');
 var view = require('view/view');
 
 exports.main = function (tokens, pipes, exit, environment) {

@@ -1,5 +1,6 @@
+const path = require('path');
 var view = require('view/view'),
-    expandPath = require('misc').expandPath;
+    expandPath = require(path.join(__dirname, '..', '..', 'misc')).expandPath;
 
 exports.main = function (tokens, pipes, exit, environment) {
 

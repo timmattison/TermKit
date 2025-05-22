@@ -82,6 +82,23 @@ cv.prototype = {
     command.tokenField.focus();
   },
   
+  // Show an error message in the current or most recent command
+  showError: function (errorMessage) {
+    var command = this.activeCommand();
+    if (command) {
+      command.showError(errorMessage);
+    } else if (this.commandList.length > 0) {
+      // If no active command, use the last one
+      command = this.commandList.collection[this.commandList.length - 1];
+      command.showError(errorMessage);
+    } else {
+      // If no commands at all, create one and show the error
+      this.newCommand();
+      command = this.activeCommand();
+      command.showError(errorMessage);
+    }
+  },
+  
   // Respond to mouse clicks.
   //foo: function (event) {
   //},

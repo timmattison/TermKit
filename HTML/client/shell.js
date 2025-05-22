@@ -74,6 +74,22 @@ tc.shell.prototype = {
         this.commandView && this.commandView.clear();
         break;
       
+      case 'shell.error':
+        // Display error to the user
+        console.error("Shell error:", args.error);
+        if (this.commandView) {
+          // Try to get the current command input and display error below it
+          try {
+            var errorMessage = args.error || "Unknown error";
+            this.commandView.showError(errorMessage);
+          } catch (e) {
+            console.error("Error showing error message:", e);
+            // If showing error through commandView fails, use browser alert as fallback
+            alert("Command error: " + errorMessage);
+          }
+        }
+        break;
+      
       case 'view.open':
         var frame = this.frames[args.rel];
 

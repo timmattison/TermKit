@@ -176,6 +176,31 @@ cv.command.prototype = {
     });
   },
 
+  // Show an error message for the command
+  showError: function (message) {
+    // Set state to error
+    this.state = 'error';
+    this.collapsed = false;
+    
+    // Create an error view in the output frame
+    var errorView = document.createElement('div');
+    errorView.className = 'error-message';
+    errorView.innerHTML = '<span class="error-icon">✖</span> <span class="error-text">' + 
+                         (message || 'Unknown error') + '</span>';
+    errorView.style.color = '#d9534f';
+    errorView.style.padding = '10px';
+    errorView.style.fontWeight = 'bold';
+    
+    // Add to output frame
+    this.outputFrame.$element.show().append(errorView);
+    
+    // Add a new command after showing the error
+    var that = this;
+    async(function () {
+      that.commandView.newCommand();
+    });
+  },
+
   toString: function () {
     return '['+ this.tokenField.tokenList.tokens +']';
   },

@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 var EventEmitter = require("events").EventEmitter,
     outputFormatter = require(path.join(__dirname, 'formatter')).formatter,
     spawn = require('child_process').spawn,
@@ -10,6 +11,46 @@ var EventEmitter = require("events").EventEmitter,
     returnObject = require(path.join(__dirname, '..', 'misc')).returnObject,
 
     outputViewCounter = 1;
+
+/**
+ * Find executable in PATH
+ */
+function findExecutable(cmd, pathDirs) {
+  // If the command has a slash, it's an absolute path or relative to current directory
+  if (cmd.indexOf('/') !== -1) {
+    if (fs.existsSync(cmd) && isExecutable(cmd)) {
+      return cmd;
+    }
+    return null;
+  }
+  
+  // Check if command exists in any PATH directory
+  for (var i = 0; i < pathDirs.length; i++) {
+    var dir = pathDirs[i];
+    // Skip empty path components
+    if (!dir) continue;
+    
+    var fullPath = path.join(dir, cmd);
+    if (fs.existsSync(fullPath) && isExecutable(fullPath)) {
+      return fullPath;
+    }
+  }
+  
+  // Command not found
+  return null;
+}
+
+/**
+ * Check if a file is executable
+ */
+function isExecutable(filePath) {
+  try {
+    fs.accessSync(filePath, fs.constants.X_OK);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
 
 /**
  * Represents a remote view for a command.
@@ -121,11 +162,14 @@ exports.commandFactory = function (command, emitter, invoke, exit, environment) 
   }
   catch (e) {
     try {
-      // Try native command.
+      // Try native command with PATH lookup
       unit = new exports.commandUnit.unixCommand(command, emitter, invoke, exit, environment);
       unit.spawn();
     }
     catch (e) {
+      // Send error to the UI
+      invoke('shell.error', { error: e.message || 'Command not found' });
+      
       // Execute null.js fallback.
       unit = new exports.commandUnit.builtinCommand(command, emitter, invoke, exit, environment);
       unit.override = 'null';
@@ -275,13 +319,47 @@ exports.commandUnit.unixCommand.prototype = new exports.commandUnit();
 exports.commandUnit.unixCommand.prototype.spawn = function () {
   var that = this,
       command = this.command,
-      prefix = (this.prefix = command.shift());
+      prefix = (this.prefix = command.shift()).trim();
 
-  this.process = spawn(prefix, command);
+  // Get PATH directories from environment
+  var pathDirs = this.environment.path || [];
+  if (!pathDirs.length) {
+    pathDirs = (process.env.PATH || '/usr/local/bin:/usr/bin:/bin').split(':');
+  }
 
-  this.process.on('exit', function (code) {
-    that.exit(!code, { code: code });
-  });
+  // Look for the executable in PATH
+  var executablePath = findExecutable(prefix, pathDirs);
+  
+  if (!executablePath) {
+    throw new Error(`Command not found: ${prefix}`);
+  }
+
+  // Try to spawn the command
+  try {
+    this.process = spawn(executablePath, command);
+    
+    // Add error handler to catch spawn errors like ENOENT
+    this.process.on('error', function (err) {
+      console.error('Error executing command:', err);
+      that.exit(false, { code: 127, error: err.message });
+      
+      // Call shell.error with the error message to display to user
+      that.invoke('shell.error', { error: err.message });
+      
+      // Emit fake exit to ensure cleanup
+      that.process.emit('exit', 127);
+    });
+
+    this.process.on('exit', function (code) {
+      that.exit(!code, { code: code });
+    });
+  } catch (err) {
+    // Handle synchronous errors in spawn
+    console.error('Failed to spawn command:', err);
+    that.invoke('shell.error', { error: err.message });
+    that.exit(false, { code: 127, error: err.message });
+    throw err;
+  }
 };
 
 exports.commandUnit.unixCommand.prototype.go = function () {

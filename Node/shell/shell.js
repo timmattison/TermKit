@@ -100,6 +100,16 @@ exports.shell.prototype = {
         config.replace(message.args);
         return;
       }
+      
+      // Intercept working directory changes.
+      if (message.method == 'shell.updatecwd' && message.args && message.args.cwd) {
+        try {
+          // Update working directory in parent process
+          process.chdir(message.args.cwd);
+        } catch (e) {
+          console.error('Failed to change directory in parent process:', e);
+        }
+      }
 
       // Lock message to this session and forward.
       message.session = this.id;

@@ -13,8 +13,9 @@ cv.commandContext = function (shell) {
 
   this.shell = shell;
 
-  this.path = shell.environment.cwd;
-  this.user = shell.environment.user;
+  // Get the current working directory from the shell environment
+  this.path = shell.environment ? shell.environment.cwd : '~';
+  this.user = shell.environment ? shell.environment.user : '';
 };
 
 cv.commandContext.prototype = {

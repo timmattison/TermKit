@@ -7,6 +7,9 @@ const parentDir = path.join(__dirname, '..');
 
 var processor = require(path.join(currentDir, 'processor'));
 
+// Store the initial working directory
+const initialCwd = process.cwd();
+
 // Change to home directory.
 try {
   process.chdir(process.env.HOME || process.env.USERPROFILE || '/tmp');
@@ -23,6 +26,14 @@ try {
 // Set up processor.
 try {
   var p = new processor.processor(process.openStdin(), process.stdout);
+  
+  // Notify parent of current working directory on startup
+  // This allows the shell to recover the working directory state on restart
+  setTimeout(function() {
+    if (p && p.notify) {
+      p.notify('shell.updatecwd', { cwd: process.cwd() });
+    }
+  }, 100);
 } catch (e) {
   console.error('Error initializing processor:', e);
   // Try to send error back to parent
